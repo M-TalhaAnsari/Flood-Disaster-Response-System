@@ -1,6 +1,7 @@
 #include<iostream>
 #include "graph.h"
 #include "system.h"
+#include "structures.h"
 
 using namespace std;
 
