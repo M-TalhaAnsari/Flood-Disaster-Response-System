@@ -1,5 +1,2 @@
-# Flood-Disaster-Response-System
-Pakistan Flood Disaster Response And Intelligent Resource Coordinator<br>
-<b> Write this command in terminal to run the code</b><br>
-g++ main.cpp system.cpp linkedlist.cpp graph.cpp Djikstra.cpp Hashtable.cpp predictiveengine.cpp -o main <br>
-main
+### Run Program <br>
+g++ src/main.cpp src/Graph.cpp src/Dijkstra.cpp src/PriorityQueue.cpp src/HashTable.cpp src/LinkedList.cpp src/PredictiveEngine.cpp -I include -o main

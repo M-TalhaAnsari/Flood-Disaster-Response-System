@@ -1,44 +1,27 @@
-#include<iostream>
-#include<limits>
-#include "../include/structures.h"
+#pragma once
+#include <string>
 using namespace std;
 
-const int HASH_SIZE = 23;
+#define HASH_TABLE_SIZE 101   // prime number for better distribution
 
-struct HashNode {
-    std::string key;   // The unique identifier
-    int value;         // The data associated with the key
-    HashNode* next;    // Pointer to the next node in the same bucket (for collisions)
-
-    // Constructor to initialize a node
-    HashNode(std::string k, int v) {
-        key = k;
-        value = v;
-        next = nullptr;
-    }
+struct HashEntry {
+    string key;          // "V101", "VIC5001", etc.
+    void* data;          // pointer to a Vehicle or Victim (we cast on retrieval)
+    HashEntry* next;
 };
 
 class HashTable {
+public:
+    HashEntry* Buckets[HASH_TABLE_SIZE];
+    int Count;
 
-    HashNode* table[HASH_SIZE]; // array of chains
+    HashTable();
+    void Insert(string key, void* data);
+    void* Search(string key);     // returns NULL if not found
+    void Remove(string key);
+    void Display();
+    int GetCount();
 
-    int hashFn(int);
-    // Returns id % HASH_SIZE
-    // Called by insert and lookup
-
-    void insertVehicle(Vehicle);
-    // Calls hashFn(), adds vehicle to correct bucket
-    // Called by: FDRRC::addVehicle()
-
-    Vehicle* lookupVehicle(int);
-    // Calls hashFn(), searches chain, returns pointer or NULL
-    // Called by: DispatchNearestVehicle, SearchVehicle, prePositionVehicle
-
-    void insertRequest(Request);
-    // Same as insertVehicle but for rescue requests
-    // Called by: FDRRC::Create_Rescue_Request()
-
-    Request* lookupRequest(int);
-    // Same as lookupVehicle but for requests
-    // Called by: DispatchNearestVehicle, searchLocation
+private:
+    int Hash(string key);    // simple polynomial rolling hash on the string
 };

@@ -1,53 +1,41 @@
-#ifndef GRAPH_H
-#define GRAPH_H
-
-#include <iostream>
-
-
+#pragma once
+#include <string>
 using namespace std;
-class Edge {
-public:
-        string dest;
-        int weight;
-        Edge* next;
-        Edge(string, int);
-    };
 
-class graph_Node {
-public:
-        string name;
-        Edge* head;
-        graph_Node* next;
-        graph_Node(string);
-    };
+// Road status flags
+#define ROAD_OPEN     0
+#define ROAD_DAMAGED  1
+#define ROAD_FLOODED  2
+
+struct Edge {
+    int destinationId;
+    int weight;            // travel time
+    int roadStatus;        // ROAD_OPEN / ROAD_DAMAGED / ROAD_FLOODED
+    Edge* next;
+};
+
+struct Location {
+    int id;
+    string name;
+    string type;           // "village", "camp", "hospital", "depot"
+    int population;
+    Edge* Head;            // head of edge list
+    Edge* Tail;
+    Location* next;
+};
 
 class Graph {
 public:
-    graph_Node* nodeHead;
+    Location* Head;
+    Location* Tail;
+    int LocationCount;
+
     Graph();
-    void addNode(string name);
-    // Creates a new graph_Node and adds to list
-    // Does NOT call anything else
-
-    void addEdge(string src, string dest, int weight);
-    // Calls findNode() to get src node, then adds Edge to its list
-    // Undirected: adds edge both ways
-    
-    void removeEdge(string src, string dest);
-    // Calls findNode(), then removes edge from adjacency list
-    // Used when a road gets FLOODED (completely gone)
-
-    void updateEdgeWeight(string src, string dest, int newWeight);
-    // Calls findNode(), finds the edge, changes its weight
-    // Used when a road gets DAMAGED (slower but not gone)
-
-    void display();
-    // Traverses all nodes and their edges, prints them
-    // Does NOT call anything else
-
-    graph_Node* findNode(string name);
-    // Traverses nodeHead list, returns matching node or NULL
-    // Called by almost every other Graph function
+    void AddLocation(int id, string name, string type, int population);
+    void AddRoad(int fromId, int toId, int weight);   // undirected: adds both directions
+    void UpdateRoadStatus(int fromId, int toId, int newStatus);
+    Location* FindLocation(int id);
+    bool HasRoad(int fromId, int toId);
+    void Display();        // prints adjacency list
+    int GetLocationCount();
 };
-
-#endif

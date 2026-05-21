@@ -1,30 +1,50 @@
-#include "../include/linkedlist.h"
+#include <iostream>
+#include "../include/LinkedList.h"
+using namespace std;
 
 LinkedList::LinkedList() {
-    head = NULL;
+    Head = NULL;
+    Tail = NULL;
+    Size = 0;
 }
 
-void LinkedList::insert(string data) {
-    link_list_Node* newNode = new link_list_Node();
-    newNode->data = data;
-    newNode->next = NULL;
+void LinkedList::Append(int actionType, string description) {
+    LogEntry* newEntry = new LogEntry;
+    newEntry->actionType = actionType;
+    newEntry->description = description;
+    newEntry->sequenceNumber = Size + 1;
+    newEntry->next = NULL;
 
-    if (head == NULL) {
-        head = newNode;
+    if (Head == NULL) {
+        // Empty list case
+        Head = newEntry;
+        Tail = newEntry;
     } else {
-        link_list_Node* temp = head;
-        while (temp->next != NULL)
-            temp = temp->next;
-
-        temp->next = newNode;
+        // Append at tail
+        Tail->next = newEntry;
+        Tail = newEntry;
     }
+    Size++;
 }
 
-void LinkedList::display() {
-    link_list_Node* temp = head;
+void LinkedList::Display() {
+    if (Head == NULL) {
+        cout << "Operations log is empty" << endl;
+        cin.get();
+        return;
+    }
 
+    cout << "------ Operations Log ------" << endl;
+    LogEntry* temp = Head;
     while (temp != NULL) {
-        cout << temp->data << endl;
+        cout << "[" << temp->sequenceNumber << "] " << temp->description << endl;
         temp = temp->next;
     }
+    cout << "----------------------------" << endl;
+    cin.get();
+    cin.get();
+}
+
+int LinkedList::GetSize() {
+    return Size;
 }
