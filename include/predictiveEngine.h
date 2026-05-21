@@ -1,25 +1,41 @@
-#include<iostream>
-#include "graph.h"
-#include "system.h"
-#include "structures.h"
-
+#pragma once
+#include <string>
+#include "Graph.h"
+#include "Dijkstra.h"
+#include "PriorityQueue.h"
+#include "HashTable.h"
+#include "LinkedList.h"
+#include "Vehicle.h"
 using namespace std;
 
 class PredictiveEngine {
-private:
-    Graph& graph;           // reference to the same graph FDRRC uses
-    Location* locations;    // pointer to FDRRC's locations array
-    int locationCount;
-
 public:
-    PredictiveEngine(Graph& g, Location* locs, int count);
+    PredictiveEngine(Graph* g, Dijkstra* d, HashTable* vt, LinkedList* log);
 
-    int countConnectedRoads(string locationName);
-    int calculateRiskScore(int locationIndex);
-    void updateAllRiskScores();
-    void propagatRisk();
-    void buildMaxHeap(Location heap[], int size);
-    void heapify(Location heap[], int size, int index);
-    Location getHighestRiskLocation(Location heap[], int size);
-    void runFullAnalysis();
+    void RunFullAnalysis();      // computes scores, BFS spread, builds queue, shows ranking  (menu 51)
+    void PrePositionVehicles();  // moves nearest vehicle to camp closest to top risk zone    (menu 52)
+
+private:
+    Graph*      G;
+    Dijkstra*   Solver;
+    HashTable*  VehicleTable;
+    LinkedList* OpsLog;
+
+    // Risk score per location id (index = locationId, same as Distance[] in Dijkstra)
+    int RiskScores[MAX_LOCATIONS];
+
+    // Min-heap reused with flipped priority — same trick as victims:
+    //   heapPriority = 1000 - riskScore
+    //   highest risk => smallest number => extracted first
+    PriorityQueue RiskQueue;
+
+    void ComputeRiskScores();
+    void SpreadRiskBFS();
+    void BuildRiskQueue();
+    void DisplayRiskRanking();
+
+    int    CountRoadsByStatus(Location* loc, int status);
+    int    ComputeRawScore(Location* loc);
+    string IntToStr(int value);
+    int    StrToInt(string s);
 };
